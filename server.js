@@ -1,16 +1,13 @@
 const express = require('express');
 const path = require('path');
-const cors = require('cors');
 const app = express();
 
-app.use(cors());
+// Serve arquivos estáticos da pasta atual (onde está o server.js e o index.html)
+app.use(express.static(__dirname));
 
-// A parte mágica: isso diz ao servidor para servir os arquivos da pasta frontend
-app.use(express.static(path.join(__dirname, '../frontend')));
-
-// Rota principal para carregar o index.html
+// Rota para a raiz
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, '../frontend/index.html'));
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 const PORT = process.env.PORT || 5000;

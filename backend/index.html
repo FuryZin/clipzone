@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-br" class="dark">
+<html lang="pt-BR" class="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,221 +28,403 @@
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: #0b0f19; }
         ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #7c3aed; }
     </style>
 </head>
 <body class="flex h-screen overflow-hidden">
 
-    <!-- TELA DE LOGIN (Visível por padrão) -->
-    <div id="login-screen" class="fixed inset-0 bg-darkBg z-50 flex items-center justify-center p-4">
+    <!-- ================= SISTEMA DE LOGIN / AUTENTICAÇÃO ================= -->
+    <div id="auth-screen" class="fixed inset-0 bg-darkBg z-50 flex items-center justify-center p-4">
         <div class="bg-cardBg border border-gray-800 p-8 rounded-3xl w-full max-w-md shadow-2xl space-y-6">
             <div class="text-center space-y-2">
                 <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-purpleAccent to-blueAccent flex items-center justify-center mx-auto text-white shadow-lg shadow-purpleAccent/30">
                     <i data-lucide="sparkles" class="w-6 h-6"></i>
                 </div>
-                <h1 class="text-2xl font-bold text-white">ClipZone</h1>
+                <h1 class="text-2xl font-bold text-white tracking-wide">ClipZone</h1>
                 <p class="text-xs text-gray-400">Sua live. Os melhores momentos. Em clips.</p>
             </div>
             
             <form onsubmit="handleLogin(event)" class="space-y-4">
                 <div>
-                    <label class="text-xs text-gray-400 font-medium">Usuário</label>
-                    <input id="login-user" type="text" placeholder="admin" required class="w-full mt-1 p-3 rounded-xl bg-gray-900 text-white border border-gray-800 focus:outline-none focus:border-purpleAccent">
+                    <label class="text-xs text-gray-400 font-medium">Nome de usuário ou E-mail</label>
+                    <input id="auth-user" type="text" placeholder="streamer" required class="w-full mt-1 p-3 rounded-xl bg-gray-900 text-white border border-gray-800 focus:outline-none focus:border-purpleAccent">
                 </div>
                 <div>
                     <label class="text-xs text-gray-400 font-medium">Senha</label>
-                    <input id="login-pass" type="password" placeholder="123" required class="w-full mt-1 p-3 rounded-xl bg-gray-900 text-white border border-gray-800 focus:outline-none focus:border-purpleAccent">
+                    <input id="auth-pass" type="password" placeholder="••••••••" required class="w-full mt-1 p-3 rounded-xl bg-gray-900 text-white border border-gray-800 focus:outline-none focus:border-purpleAccent">
                 </div>
                 <button type="submit" class="w-full bg-purpleAccent hover:bg-purpleAccent/90 text-white font-semibold py-3 rounded-xl transition-all shadow-lg shadow-purpleAccent/25">
                     Entrar na Plataforma
                 </button>
             </form>
-            <p class="text-[11px] text-center text-gray-500">Dica: Use usuário <strong>admin</strong> e senha <strong>123</strong> para testar.</p>
+            <div class="text-center">
+                <a href="#" onclick="alert('Sistema gratuito ClipZone. Crie sua conta informando qualquer usuário e senha.')" class="text-xs text-purpleAccent hover:underline">Criar conta gratuita</a>
+            </div>
         </div>
     </div>
 
-    <!-- APLICAÇÃO PRINCIPAL (Oculta até fazer login) -->
-    <div id="app-screen" class="flex h-screen w-screen overflow-hidden hidden">
-        <!-- SIDEBAR -->
-        <aside class="w-64 bg-cardBg border-r border-gray-800 flex flex-col justify-between p-4 shrink-0">
+    <!-- ================= APLICAÇÃO PRINCIPAL (DASHBOARD & FERRAMENTAS) ================= -->
+    <div id="main-app" class="flex h-screen w-screen overflow-hidden hidden">
+        
+        <!-- SIDEBAR MODERNA -->
+        <aside class="w-64 bg-cardBg border-r border-gray-800 flex flex-col justify-between p-4 shrink-0 transition-all">
             <div>
                 <div class="flex items-center gap-3 px-2 py-4 mb-6">
-                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-purpleAccent to-blueAccent flex items-center justify-center text-white">
+                    <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-purpleAccent to-blueAccent flex items-center justify-center text-white shadow-lg shadow-purpleAccent/30">
                         <i data-lucide="sparkles" class="w-5 h-5"></i>
                     </div>
                     <div>
-                        <h1 class="font-bold text-lg text-white">ClipZone</h1>
-                        <p class="text-xs text-gray-400">Plataforma Gratuita</p>
+                        <h1 class="font-bold text-lg tracking-wide text-white">ClipZone</h1>
+                        <p class="text-xs text-gray-400">100% Gratuito</p>
                     </div>
                 </div>
 
-                <nav class="space-y-1">
-                    <button onclick="switchTab('dashboard')" data-tab="dashboard" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium bg-purpleAccent/20 text-white border border-purpleAccent/30">
-                        <i data-lucide="layout-dashboard" class="w-4 h-4 text-purpleAccent"></i> Dashboard
-                    </button>
-                    <button onclick="switchTab('discoveries')" data-tab="discoveries" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-gray-800/50">
-                        <i data-lucide="flame" class="w-4 h-4 text-orange-400"></i> Descobertas (#1, #2, #3)
-                    </button>
-                    <button onclick="switchTab('videos')" data-tab="videos" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-gray-800/50">
-                        <i data-lucide="video" class="w-4 h-4"></i> Meus Vídeos
-                    </button>
-                    <button onclick="switchTab('editor')" data-tab="editor" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-gray-800/50">
-                        <i data-lucide="scissors" class="w-4 h-4"></i> Editor & Clipagem
-                    </button>
-                    <button onclick="switchTab('settings')" data-tab="settings" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-gray-800/50">
-                        <i data-lucide="settings" class="w-4 h-4"></i> Configurações
-                    </button>
-                </nav>
+                <div class="space-y-6">
+                    <div>
+                        <p class="px-3 text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Visão Geral</p>
+                        <nav class="space-y-1">
+                            <button onclick="switchTab('dashboard')" data-tab="dashboard" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all bg-gradient-to-r from-purpleAccent/20 to-blueAccent/10 text-white border border-purpleAccent/30">
+                                <i data-lucide="layout-dashboard" class="w-4 h-4 text-purpleAccent"></i> Dashboard
+                            </button>
+                            <button onclick="switchTab('discoveries')" data-tab="discoveries" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-gray-800/50">
+                                <i data-lucide="flame" class="w-4 h-4 text-orange-400"></i> Descobertas (#1, #2, #3)
+                            </button>
+                        </nav>
+                    </div>
+
+                    <div>
+                        <p class="px-3 text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Produção</p>
+                        <nav class="space-y-1">
+                            <button onclick="switchTab('videos')" data-tab="videos" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-gray-800/50">
+                                <i data-lucide="video" class="w-4 h-4"></i> Meus Vídeos
+                            </button>
+                            <button onclick="switchTab('editor')" data-tab="editor" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-gray-800/50">
+                                <i data-lucide="scissors" class="w-4 h-4"></i> Editor de Clips
+                            </button>
+                            <button onclick="switchTab('library')" data-tab="library" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-gray-800/50">
+                                <i data-lucide="folder-kanban" class="w-4 h-4"></i> Biblioteca & Projetos
+                            </button>
+                        </nav>
+                    </div>
+
+                    <div>
+                        <p class="px-3 text-[10px] font-semibold text-gray-500 uppercase tracking-wider mb-2">Conta</p>
+                        <nav class="space-y-1">
+                            <button onclick="switchTab('settings')" data-tab="settings" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-gray-800/50">
+                                <i data-lucide="settings" class="w-4 h-4"></i> Configurações
+                            </button>
+                        </nav>
+                    </div>
+                </div>
             </div>
+
             <div class="border-t border-gray-800 pt-4">
                 <button onclick="handleLogout()" class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-red-400 hover:bg-red-500/10 transition-colors">
-                    <i data-lucide="log-out" class="w-4 h-4"></i> Sair
+                    <i data-lucide="log-out" class="w-4 h-4"></i> Sair da Conta
                 </button>
             </div>
         </aside>
 
-        <!-- CONTEÚDO DINÂMICO -->
+        <!-- CONTEÚDO PRINCIPAL DINÂMICO -->
         <main class="flex-1 overflow-y-auto" id="main-content">
-            <!-- Injetado via JS -->
+            <!-- Injetado via JavaScript -->
         </main>
     </div>
 
-    <!-- SCRIPT DA APLICAÇÃO -->
+    <!-- ================= MODAL DE UPLOAD DE VÍDEO ================= -->
+    <div id="upload-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-cardBg border border-gray-800 w-full max-w-lg rounded-2xl p-6 relative shadow-2xl">
+            <button onclick="toggleModal('upload-modal', false)" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <h3 class="text-xl font-bold text-white mb-2">Enviar Gravação de Live</h3>
+            <p class="text-sm text-gray-400 mb-6">Suporte para arquivos MP4, MOV e WEBM de alta duração.</p>
+            
+            <div id="upload-dropzone" class="border-2 border-dashed border-gray-700 hover:border-purpleAccent rounded-2xl p-8 text-center transition-all cursor-pointer">
+                <div class="w-14 h-14 rounded-2xl bg-purpleAccent/10 text-purpleAccent flex items-center justify-center mx-auto mb-4">
+                    <i data-lucide="upload" class="w-7 h-7"></i>
+                </div>
+                <p class="font-semibold text-white mb-1">Arraste seu vídeo ou clique aqui</p>
+                <p class="text-xs text-gray-400 mb-4">Processamento assíncrono sem travar o navegador</p>
+                <input type="file" id="file-input" class="hidden" accept="video/mp4,video/quicktime,video/webm" onchange="simulateUpload()">
+                <button onclick="document.getElementById('file-input').click()" class="bg-purpleAccent hover:bg-purpleAccent/90 text-white px-4 py-2 rounded-xl text-sm font-medium shadow-lg shadow-purpleAccent/20">Selecionar do Computador</button>
+            </div>
+
+            <div id="upload-progress" class="hidden space-y-4 py-8 text-center">
+                <div class="w-12 h-12 rounded-full border-4 border-purpleAccent border-t-transparent animate-spin mx-auto"></div>
+                <p class="font-semibold text-white">Analisando áudio, tons e gerando sugestões...</p>
+                <div class="w-full bg-gray-800 h-2.5 rounded-full overflow-hidden">
+                    <div id="progress-bar-fill" class="bg-gradient-to-r from-purpleAccent to-blueAccent h-full w-0 transition-all"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL DE EXPORTAÇÃO ================= -->
+    <div id="export-modal" class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-cardBg border border-gray-800 w-full max-w-md rounded-2xl p-6 relative shadow-2xl">
+            <button onclick="toggleModal('export-modal', false)" class="absolute top-4 right-4 text-gray-400 hover:text-white">
+                <i data-lucide="x" class="w-5 h-5"></i>
+            </button>
+            <h3 class="text-xl font-bold text-white mb-2">Exportar Clip</h3>
+            <p class="text-sm text-gray-400 mb-6">Configuração final de renderização e legendas.</p>
+
+            <div id="export-options" class="space-y-4">
+                <div>
+                    <label class="text-xs text-gray-400 font-medium">Resolução de Saída</label>
+                    <select class="w-full mt-1 bg-gray-900 border border-gray-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-purpleAccent">
+                        <option>1080p (Full HD — Recomendado)</option>
+                        <option>720p (HD)</option>
+                        <option>1440p (2K)</option>
+                    </select>
+                </div>
+                <div class="flex items-center justify-between text-sm text-gray-300 py-2 border-y border-gray-800">
+                    <span>Legendas Automáticas</span>
+                    <span class="text-purpleAccent font-semibold">Ativadas (Estilo Streamer)</span>
+                </div>
+                <button onclick="simulateExport()" class="w-full bg-purpleAccent hover:bg-purpleAccent/90 text-white font-semibold py-3 rounded-xl shadow-lg shadow-purpleAccent/25">Renderizar e Baixar MP4</button>
+            </div>
+
+            <div id="export-loading" class="hidden py-8 text-center space-y-4">
+                <div class="w-12 h-12 rounded-full border-4 border-purpleAccent border-t-transparent animate-spin mx-auto"></div>
+                <p class="font-semibold text-white">Renderizando clip via motor gráfico...</p>
+                <p class="text-xs text-gray-400">Aplicando cortes e enquadramento...</p>
+            </div>
+
+            <div id="export-success" class="hidden py-6 text-center space-y-4">
+                <div class="w-12 h-12 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center mx-auto">
+                    <i data-lucide="check-circle" class="w-6 h-6"></i>
+                </div>
+                <p class="font-semibold text-white">Clip renderizado com sucesso!</p>
+                <button onclick="toggleModal('export-modal', false)" class="bg-purpleAccent hover:bg-purpleAccent/90 text-white px-6 py-2.5 rounded-xl text-sm font-semibold shadow-lg shadow-purpleAccent/25">Baixar Arquivo MP4</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= SCRIPTS DE CONTROLE DA APLICAÇÃO ================= -->
     <script>
         lucide.createIcons();
 
         function handleLogin(e) {
             e.preventDefault();
-            const user = document.getElementById('login-user').value;
+            const user = document.getElementById('auth-user').value;
             if (user) {
-                document.getElementById('login-screen').classList.add('hidden');
-                document.getElementById('app-screen').classList.remove('hidden');
+                document.getElementById('auth-screen').classList.add('hidden');
+                document.getElementById('main-app').classList.remove('hidden');
                 switchTab('dashboard');
             }
         }
 
         function handleLogout() {
-            document.getElementById('app-screen').classList.add('hidden');
-            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('main-app').classList.add('hidden');
+            document.getElementById('auth-screen').classList.remove('hidden');
         }
 
         const views = {
             dashboard: `
                 <div class="p-8 space-y-8 max-w-7xl mx-auto">
-                    <div class="flex items-center justify-between">
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                         <div>
                             <h2 class="text-2xl font-bold text-white">Olá, Streamer! 👋</h2>
-                            <p class="text-sm text-gray-400 mt-1">Transforme suas gravações em clips de forma fácil.</p>
+                            <p class="text-sm text-gray-400 mt-1">Transforme suas lives em clips virais sem pagar nada.</p>
                         </div>
-                        <button onclick="switchTab('editor')" class="bg-purpleAccent hover:bg-purpleAccent/90 text-white px-4 py-2.5 rounded-xl font-medium text-sm shadow-lg shadow-purpleAccent/25 flex items-center gap-2">
-                            <i data-lucide="scissors" class="w-4 h-4"></i> Criar Novo Clip
-                        </button>
+                        <div class="flex items-center gap-3">
+                            <button onclick="toggleModal('upload-modal', true)" class="flex items-center gap-2 bg-purpleAccent hover:bg-purpleAccent/90 text-white px-4 py-2.5 rounded-xl font-medium text-sm shadow-lg shadow-purpleAccent/25">
+                                <i data-lucide="upload" class="w-4 h-4"></i> Enviar Vídeo
+                            </button>
+                            <button onclick="switchTab('editor')" class="flex items-center gap-2 bg-cardBg border border-gray-700 hover:border-gray-500 text-white px-4 py-2.5 rounded-xl font-medium text-sm">
+                                <i data-lucide="plus" class="w-4 h-4"></i> Novo Projeto
+                            </button>
+                        </div>
                     </div>
 
-                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                         <div class="bg-cardBg border border-gray-800 p-5 rounded-2xl">
-                            <p class="text-sm text-gray-400">Vídeos Enviados</p>
-                            <p class="text-2xl font-bold text-white mt-2">12</p>
+                            <div class="flex items-center justify-between"><p class="text-sm text-gray-400">Vídeos Enviados</p><i data-lucide="film" class="w-5 h-5 text-purpleAccent"></i></div>
+                            <p class="text-2xl font-bold text-white mt-3">12</p><p class="text-xs text-gray-400 mt-1">+2 esta semana</p>
                         </div>
                         <div class="bg-cardBg border border-gray-800 p-5 rounded-2xl">
-                            <p class="text-sm text-gray-400">Clips Gerados</p>
-                            <p class="text-2xl font-bold text-white mt-2">38</p>
+                            <div class="flex items-center justify-between"><p class="text-sm text-gray-400">Clips Criados</p><i data-lucide="scissors" class="w-5 h-5 text-purpleAccent"></i></div>
+                            <p class="text-2xl font-bold text-white mt-3">38</p><p class="text-xs text-gray-400 mt-1">100% gratuitos</p>
                         </div>
                         <div class="bg-cardBg border border-gray-800 p-5 rounded-2xl">
-                            <p class="text-sm text-gray-400">Potencial Médio</p>
-                            <p class="text-2xl font-bold text-purpleAccent mt-2">91.4%</p>
+                            <div class="flex items-center justify-between"><p class="text-sm text-gray-400">Armazenamento</p><i data-lucide="hard-drive" class="w-5 h-5 text-purpleAccent"></i></div>
+                            <p class="text-2xl font-bold text-white mt-3">45.2 GB</p><p class="text-xs text-gray-400 mt-1">Plano Gratuito Ativo</p>
+                        </div>
+                        <div class="bg-cardBg border border-gray-800 p-5 rounded-2xl">
+                            <div class="flex items-center justify-between"><p class="text-sm text-gray-400">Potencial Médio</p><i data-lucide="trending-up" class="w-5 h-5 text-purpleAccent"></i></div>
+                            <p class="text-2xl font-bold text-white mt-3">91.4%</p><p class="text-xs text-gray-400 mt-1">Baseado em IA</p>
                         </div>
                     </div>
 
                     <div class="space-y-4">
-                        <h3 class="text-lg font-bold text-white flex items-center gap-2"><i data-lucide="sparkles" class="w-5 h-5 text-purpleAccent"></i> Clips em Destaque (#1, #2, #3)</h3>
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-bold text-white flex items-center gap-2"><i data-lucide="sparkles" class="w-5 h-5 text-purpleAccent"></i> Clips em Destaque (#1, #2, #3)</h3>
+                            <button onclick="switchTab('discoveries')" class="text-sm text-purpleAccent hover:underline font-medium">Ver análise completa →</button>
+                        </div>
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
-                            <div class="bg-cardBg border border-gray-800 rounded-2xl p-4 space-y-3">
-                                <div class="h-36 bg-gray-900 rounded-xl flex items-center justify-center text-xs text-gray-500 font-bold">#1 REAÇÃO INTENSA</div>
-                                <h4 class="font-semibold text-white">Momento épico no boss final</h4>
-                                <div class="flex justify-between text-xs text-gray-400"><span>Score: 96/100</span><button onclick="switchTab('editor')" class="text-purpleAccent hover:underline">Editar Clip</button></div>
+                            <div class="bg-cardBg border border-gray-800 rounded-2xl overflow-hidden group">
+                                <div class="h-40 bg-gray-900 relative flex items-center justify-center">
+                                    <span class="absolute top-3 left-3 bg-purpleAccent text-white text-xs px-2.5 py-1 rounded-lg font-semibold">#1 Destaque</span>
+                                    <span class="absolute bottom-3 right-3 bg-black/70 text-white text-xs px-2 py-0.5 rounded">0:28</span>
+                                </div>
+                                <div class="p-4 space-y-3">
+                                    <h4 class="font-semibold text-white">#1 — Reação intensa ao boss final</h4>
+                                    <div class="flex items-center justify-between text-xs text-gray-400">
+                                        <span>Pontuação: <strong class="text-purpleAccent">96/100</strong></span>
+                                        <span class="bg-blueAccent/10 text-blueAccent px-2 py-0.5 rounded">Alto Engajamento</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 pt-2 border-t border-gray-800">
+                                        <button onclick="switchTab('editor')" class="flex-1 bg-purpleAccent/10 text-purpleAccent text-xs py-2 rounded-xl font-medium">Editar</button>
+                                        <button onclick="toggleModal('export-modal', true)" class="flex-1 bg-gray-800 text-white text-xs py-2 rounded-xl font-medium">Exportar</button>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="bg-cardBg border border-gray-800 rounded-2xl p-4 space-y-3">
-                                <div class="h-36 bg-gray-900 rounded-xl flex items-center justify-center text-xs text-gray-500 font-bold">#2 PIADA COM CHAT</div>
-                                <h4 class="font-semibold text-white">Risadas com doação</h4>
-                                <div class="flex justify-between text-xs text-gray-400"><span>Score: 89/100</span><button onclick="switchTab('editor')" class="text-purpleAccent hover:underline">Editar Clip</button></div>
+                            <div class="bg-cardBg border border-gray-800 rounded-2xl overflow-hidden group">
+                                <div class="h-40 bg-gray-900 relative flex items-center justify-center">
+                                    <span class="absolute top-3 left-3 bg-purpleAccent text-white text-xs px-2.5 py-1 rounded-lg font-semibold">#2 Destaque</span>
+                                    <span class="absolute bottom-3 right-3 bg-black/70 text-white text-xs px-2 py-0.5 rounded">0:19</span>
+                                </div>
+                                <div class="p-4 space-y-3">
+                                    <h4 class="font-semibold text-white">#2 — Piada espontânea com o chat</h4>
+                                    <div class="flex items-center justify-between text-xs text-gray-400">
+                                        <span>Pontuação: <strong class="text-purpleAccent">89/100</strong></span>
+                                        <span class="bg-blueAccent/10 text-blueAccent px-2 py-0.5 rounded">Alta Retenção</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 pt-2 border-t border-gray-800">
+                                        <button onclick="switchTab('editor')" class="flex-1 bg-purpleAccent/10 text-purpleAccent text-xs py-2 rounded-xl font-medium">Editar</button>
+                                        <button onclick="toggleModal('export-modal', true)" class="flex-1 bg-gray-800 text-white text-xs py-2 rounded-xl font-medium">Exportar</button>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="bg-cardBg border border-gray-800 rounded-2xl p-4 space-y-3">
-                                <div class="h-36 bg-gray-900 rounded-xl flex items-center justify-center text-xs text-gray-500 font-bold">#3 BUG INESPERADO</div>
-                                <h4 class="font-semibold text-white">Falha engraçada no jogo</h4>
-                                <div class="flex justify-between text-xs text-gray-400"><span>Score: 84/100</span><button onclick="switchTab('editor')" class="text-purpleAccent hover:underline">Editar Clip</button></div>
+                            <div class="bg-cardBg border border-gray-800 rounded-2xl overflow-hidden group">
+                                <div class="h-40 bg-gray-900 relative flex items-center justify-center">
+                                    <span class="absolute top-3 left-3 bg-purpleAccent text-white text-xs px-2.5 py-1 rounded-lg font-semibold">#3 Destaque</span>
+                                    <span class="absolute bottom-3 right-3 bg-black/70 text-white text-xs px-2 py-0.5 rounded">0:24</span>
+                                </div>
+                                <div class="p-4 space-y-3">
+                                    <h4 class="font-semibold text-white">#3 — Bug engraçado no cenário</h4>
+                                    <div class="flex items-center justify-between text-xs text-gray-400">
+                                        <span>Pontuação: <strong class="text-purpleAccent">84/100</strong></span>
+                                        <span class="bg-blueAccent/10 text-blueAccent px-2 py-0.5 rounded">Momento Alternativo</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 pt-2 border-t border-gray-800">
+                                        <button onclick="switchTab('editor')" class="flex-1 bg-purpleAccent/10 text-purpleAccent text-xs py-2 rounded-xl font-medium">Editar</button>
+                                        <button onclick="toggleModal('export-modal', true)" class="flex-1 bg-gray-800 text-white text-xs py-2 rounded-xl font-medium">Exportar</button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             `,
             discoveries: `
-                <div class="p-8 max-w-7xl mx-auto space-y-6">
-                    <h2 class="text-2xl font-bold text-white">Central de Descobertas (#1, #2, #3)</h2>
-                    <p class="text-sm text-gray-400">Análise detalhada de retenção e impacto gerada por IA.</p>
-                    <div class="space-y-3">
-                        <div class="bg-cardBg border border-gray-800 p-5 rounded-2xl flex items-center justify-between">
-                            <div><h4 class="font-bold text-white">#1 — Reação intensa ao boss final</h4><p class="text-xs text-gray-400 mt-1">Retenção estimada: 98% • Impacto: Alto</p></div>
-                            <button onclick="switchTab('editor')" class="bg-purpleAccent text-white px-4 py-2 rounded-xl text-xs font-semibold">Clipar Agora</button>
+                <div class="p-8 max-w-7xl mx-auto space-y-8">
+                    <div>
+                        <h2 class="text-2xl font-bold text-white flex items-center gap-2"><i data-lucide="flame" class="w-6 h-6 text-orange-400"></i> Central de Descobertas</h2>
+                        <p class="text-sm text-gray-400 mt-1">Análise detalhada de retenção e impacto dos 3 melhores momentos detectados nas gravações.</p>
+                    </div>
+                    <div class="space-y-4">
+                        <div class="bg-cardBg border border-gray-800 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-6">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-2xl bg-purpleAccent/20 text-purpleAccent font-bold text-lg flex items-center justify-center">#1</div>
+                                <div>
+                                    <h3 class="font-bold text-white text-lg">Reação intensa ao boss final <span class="text-purpleAccent text-xs ml-2">96/100 Pts</span></h3>
+                                    <p class="text-sm text-gray-400">Retenção estimada: <strong>98%</strong> • Impacto inicial: <strong>Alto</strong> • Reação: <strong>Surpresa extrema</strong></p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button onclick="switchTab('editor')" class="bg-purpleAccent/10 text-purpleAccent px-4 py-2.5 rounded-xl font-medium text-sm">Editar</button>
+                                <button onclick="toggleModal('export-modal', true)" class="bg-purpleAccent text-white px-4 py-2.5 rounded-xl font-medium text-sm">Exportar</button>
+                            </div>
                         </div>
-                        <div class="bg-cardBg border border-gray-800 p-5 rounded-2xl flex items-center justify-between">
-                            <div><h4 class="font-bold text-white">#2 — Piada espontânea com o chat</h4><p class="text-xs text-gray-400 mt-1">Retenção estimada: 92% • Impacto: Médio</p></div>
-                            <button onclick="switchTab('editor')" class="bg-purpleAccent text-white px-4 py-2 rounded-xl text-xs font-semibold">Clipar Agora</button>
+                        <div class="bg-cardBg border border-gray-800 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-6">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-2xl bg-purpleAccent/20 text-purpleAccent font-bold text-lg flex items-center justify-center">#2</div>
+                                <div>
+                                    <h3 class="font-bold text-white text-lg">Piada espontânea com o chat <span class="text-purpleAccent text-xs ml-2">89/100 Pts</span></h3>
+                                    <p class="text-sm text-gray-400">Retenção estimada: <strong>92%</strong> • Impacto inicial: <strong>Médio-Alto</strong> • Reação: <strong>Risadas</strong></p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button onclick="switchTab('editor')" class="bg-purpleAccent/10 text-purpleAccent px-4 py-2.5 rounded-xl font-medium text-sm">Editar</button>
+                                <button onclick="toggleModal('export-modal', true)" class="bg-purpleAccent text-white px-4 py-2.5 rounded-xl font-medium text-sm">Exportar</button>
+                            </div>
                         </div>
-                        <div class="bg-cardBg border border-gray-800 p-5 rounded-2xl flex items-center justify-between">
-                            <div><h4 class="font-bold text-white">#3 — Bug engraçado no cenário</h4><p class="text-xs text-gray-400 mt-1">Retenção estimada: 88% • Impacto: Médio</p></div>
-                            <button onclick="switchTab('editor')" class="bg-purpleAccent text-white px-4 py-2 rounded-xl text-xs font-semibold">Clipar Agora</button>
+                        <div class="bg-cardBg border border-gray-800 rounded-2xl p-6 flex flex-col md:flex-row items-center justify-between gap-6">
+                            <div class="flex items-center gap-4">
+                                <div class="w-12 h-12 rounded-2xl bg-purpleAccent/20 text-purpleAccent font-bold text-lg flex items-center justify-center">#3</div>
+                                <div>
+                                    <h3 class="font-bold text-white text-lg">Bug engraçado no cenário <span class="text-purpleAccent text-xs ml-2">84/100 Pts</span></h3>
+                                    <p class="text-sm text-gray-400">Retenção estimada: <strong>88%</strong> • Impacto inicial: <strong>Médio</strong> • Reação: <strong>Incredulidade</strong></p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <button onclick="switchTab('editor')" class="bg-purpleAccent/10 text-purpleAccent px-4 py-2.5 rounded-xl font-medium text-sm">Editar</button>
+                                <button onclick="toggleModal('export-modal', true)" class="bg-purpleAccent text-white px-4 py-2.5 rounded-xl font-medium text-sm">Exportar</button>
+                            </div>
                         </div>
                     </div>
                 </div>
             `,
             videos: `
                 <div class="p-8 max-w-7xl mx-auto space-y-6">
-                    <h2 class="text-2xl font-bold text-white">Meus Vídeos & Upload</h2>
-                    <p class="text-sm text-gray-400">Envie suas gravações longas de lives (MP4, MOV, WEBM).</p>
-                    <div class="bg-cardBg border border-dashed border-gray-700 p-8 rounded-2xl text-center space-y-3">
-                        <i data-lucide="upload" class="w-8 h-8 text-purpleAccent mx-auto"></i>
-                        <p class="font-semibold text-white">Arraste seu vídeo ou clique para enviar</p>
-                        <input type="file" id="file-up" class="hidden" onchange="alert('Vídeo enviado com sucesso!')">
-                        <button onclick="document.getElementById('file-up').click()" class="bg-purpleAccent text-white px-4 py-2 rounded-xl text-sm font-semibold">Selecionar Arquivo</button>
+                    <div class="flex items-center justify-between">
+                        <div><h2 class="text-2xl font-bold text-white">Meus Vídeos</h2><p class="text-sm text-gray-400 mt-1">Gerencie todas as gravações enviadas para a ClipZone.</p></div>
+                        <button onclick="toggleModal('upload-modal', true)" class="bg-purpleAccent text-white px-4 py-2.5 rounded-xl font-medium text-sm">Enviar Novo Vídeo</button>
+                    </div>
+                    <div class="bg-cardBg border border-gray-800 rounded-2xl p-5 space-y-4">
+                        <div class="flex items-center justify-between border-b border-gray-800 pb-4">
+                            <div class="flex items-center gap-3"><i data-lucide="film" class="text-purpleAccent w-5 h-5"></i><div><h4 class="font-semibold text-white">Live_Gameplay_Valorant.mp4</h4><p class="text-xs text-gray-400">03:42:15 • 8.4 GB • Pronto</p></div></div>
+                            <button onclick="switchTab('editor')" class="bg-purpleAccent/10 text-purpleAccent px-3 py-1.5 rounded-lg text-xs font-medium">Abrir Editor</button>
+                        </div>
                     </div>
                 </div>
             `,
             editor: `
                 <div class="p-8 max-w-7xl mx-auto space-y-6">
                     <div class="flex items-center justify-between">
-                        <div>
-                            <h2 class="text-2xl font-bold text-white">Editor & Clipagem</h2>
-                            <p class="text-sm text-gray-400">Corte trechos e ajuste a proporção para redes sociais.</p>
-                        </div>
-                        <button onclick="alert('Clip exportado com sucesso!')" class="bg-gradient-to-r from-purpleAccent to-blueAccent text-white px-5 py-2.5 rounded-xl font-semibold text-sm shadow-lg shadow-purpleAccent/25">
-                            Exportar Clip MP4
-                        </button>
+                        <div><h2 class="text-2xl font-bold text-white">Editor de Clips</h2><p class="text-sm text-gray-400 mt-1">Corte trechos, ajuste enquadramento e legendas.</p></div>
+                        <button onclick="toggleModal('export-modal', true)" class="bg-gradient-to-r from-purpleAccent to-blueAccent text-white px-5 py-2.5 rounded-xl font-medium text-sm shadow-lg shadow-purpleAccent/25">Exportar Clip</button>
                     </div>
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                        <div class="lg:col-span-2 bg-cardBg border border-gray-800 rounded-2xl p-6 flex items-center justify-center min-h-[350px]">
-                            <div class="w-[200px] h-[350px] bg-black rounded-xl border border-gray-800 flex items-center justify-center text-xs text-gray-500 font-bold">[ PREVIEW 9:16 ]</div>
+                        <div class="lg:col-span-2 bg-cardBg border border-gray-800 rounded-2xl p-6 flex flex-col items-center justify-center min-h-[380px]">
+                            <div class="w-[220px] h-[390px] bg-black rounded-xl border border-gray-800 flex items-center justify-center text-xs text-gray-500 font-bold">[ PREVIEW 9:16 ]</div>
                         </div>
-                        <div class="bg-cardBg border border-gray-800 rounded-2xl p-6 space-y-4">
-                            <h3 class="font-semibold text-white text-sm">Formatos Redes Sociais</h3>
-                            <div class="grid grid-cols-3 gap-2">
-                                <button class="bg-purpleAccent/20 border border-purpleAccent text-white py-2 rounded-xl text-xs font-bold">9:16</button>
-                                <button class="bg-gray-900 border border-gray-800 text-gray-400 py-2 rounded-xl text-xs font-bold">1:1</button>
-                                <button class="bg-gray-900 border border-gray-800 text-gray-400 py-2 rounded-xl text-xs font-bold">16:9</button>
+                        <div class="bg-cardBg border border-gray-800 rounded-2xl p-6 space-y-6">
+                            <div>
+                                <h3 class="font-semibold text-white text-sm mb-3">Formatos de Redes Sociais</h3>
+                                <div class="grid grid-cols-3 gap-2">
+                                    <button class="bg-purpleAccent/20 border border-purpleAccent text-white py-2 rounded-xl text-xs font-bold">9:16</button>
+                                    <button class="bg-gray-900 border border-gray-800 text-gray-400 py-2 rounded-xl text-xs font-bold">1:1</button>
+                                    <button class="bg-gray-900 border border-gray-800 text-gray-400 py-2 rounded-xl text-xs font-bold">16:9</button>
+                                </div>
                             </div>
-                            <div class="pt-4 border-t border-gray-800">
-                                <h3 class="font-semibold text-white text-sm mb-2">Legendas Automáticas</h3>
-                                <button class="w-full bg-gray-900 border border-gray-800 text-left p-3 rounded-xl text-xs text-gray-300">Estilo: Streamer (Ativo)</button>
+                            <div class="border-t border-gray-800 pt-4">
+                                <h3 class="font-semibold text-white text-sm mb-3">Legendas Automáticas</h3>
+                                <div class="space-y-2">
+                                    <button class="w-full text-left px-3 py-2 rounded-xl bg-gray-800 text-xs text-white">Estilo: Streamer (Ativo)</button>
+                                    <button class="w-full text-left px-3 py-2 rounded-xl bg-gray-800/40 text-xs text-gray-400">Estilo: Gaming</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             `,
+            library: `
+                <div class="p-8 max-w-7xl mx-auto space-y-6">
+                    <h2 class="text-2xl font-bold text-white">Biblioteca & Projetos</h2>
+                    <p class="text-sm text-gray-400">Seus clips salvos, rascunhos e vídeos exportados.</p>
+                    <div class="bg-cardBg border border-gray-800 rounded-2xl p-8 text-center text-gray-400">Nenhum rascunho pendente. Todos os clips foram exportados com sucesso.</div>
+                </div>
+            `,
             settings: `
                 <div class="p-8 max-w-4xl mx-auto space-y-6">
                     <h2 class="text-2xl font-bold text-white">Configurações</h2>
-                    <div class="bg-cardBg border border-gray-800 p-6 rounded-2xl space-y-4">
-                        <div><label class="text-xs text-gray-400">Usuário</label><input type="text" value="admin" class="w-full mt-1 p-3 bg-gray-900 border border-gray-800 rounded-xl text-white text-sm"></div>
-                        <button onclick="alert('Configurações salvas!')" class="bg-purpleAccent text-white px-6 py-2 rounded-xl text-sm font-semibold">Salvar</button>
+                    <div class="bg-cardBg border border-gray-800 rounded-2xl p-6 space-y-4">
+                        <div><label class="text-xs text-gray-400">Nome de Usuário</label><input type="text" value="StreamerPro" class="w-full mt-1 bg-gray-900 border border-gray-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-purpleAccent"></div>
+                        <div><label class="text-xs text-gray-400">E-mail</label><input type="email" value="streamer@clipzone.io" class="w-full mt-1 bg-gray-900 border border-gray-800 rounded-xl p-3 text-sm text-white focus:outline-none focus:border-purpleAccent"></div>
+                        <button onclick="alert('Configurações salvas com sucesso!')" class="bg-purpleAccent text-white px-6 py-2.5 rounded-xl text-sm font-semibold shadow-lg shadow-purpleAccent/25">Salvar Alterações</button>
                     </div>
                 </div>
             `
@@ -252,12 +434,51 @@
             document.getElementById('main-content').innerHTML = views[tabName];
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 if (btn.getAttribute('data-tab') === tabName) {
-                    btn.className = "nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium bg-purpleAccent/20 text-white border border-purpleAccent/30";
+                    btn.className = "nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all bg-gradient-to-r from-purpleAccent/20 to-blueAccent/10 text-white border border-purpleAccent/30";
                 } else {
-                    btn.className = "nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-gray-800/50";
+                    btn.className = "nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium transition-all text-gray-400 hover:text-white hover:bg-gray-800/50";
                 }
             });
             lucide.createIcons();
+        }
+
+        function toggleModal(modalId, show) {
+            const modal = document.getElementById(modalId);
+            if (show) {
+                modal.classList.remove('hidden');
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        function simulateUpload() {
+            document.getElementById('upload-dropzone').classList.add('hidden');
+            document.getElementById('upload-progress').classList.remove('hidden');
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += 25;
+                document.getElementById('progress-bar-fill').style.width = progress + '%';
+                if (progress >= 100) {
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        toggleModal('upload-modal', false);
+                        document.getElementById('upload-dropzone').classList.remove('hidden');
+                        document.getElementById('upload-progress').classList.add('hidden');
+                        document.getElementById('progress-bar-fill').style.width = '0%';
+                        alert('Vídeo enviado e analisado com sucesso! Momentos detectados.');
+                        switchTab('dashboard');
+                    }, 500);
+                }
+            }, 300);
+        }
+
+        function simulateExport() {
+            document.getElementById('export-options').classList.add('hidden');
+            document.getElementById('export-loading').classList.remove('hidden');
+            setTimeout(() => {
+                document.getElementById('export-loading').classList.add('hidden');
+                document.getElementById('export-success').classList.remove('hidden');
+            }, 2500);
         }
     </script>
 </body>

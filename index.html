@@ -1,0 +1,112 @@
+<!-- frontend/index.html -->
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ClipZone — Sua live. Os melhores momentos. Em clips.</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkBg: "#0b0f19",
+                        cardBg: "#131b2e",
+                        purpleAccent: "#7c3aed",
+                        blueAccent: "#2563eb",
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="flex h-screen overflow-hidden bg-darkBg text-gray-100">
+
+    <!-- SIDEBAR SIMPLIFICADA E DIRETA -->
+    <aside class="w-64 bg-cardBg border-r border-gray-800 flex flex-col justify-between p-4 shrink-0">
+        <div>
+            <div class="flex items-center gap-3 px-2 py-4 mb-6">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-purpleAccent to-blueAccent flex items-center justify-center text-white">
+                    <i data-lucide="sparkles" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-lg text-white">ClipZone</h1>
+                    <p class="text-xs text-gray-400">Sua live. Em clips.</p>
+                </div>
+            </div>
+
+            <nav class="space-y-1">
+                <button onclick="switchTab('dashboard')" data-tab="dashboard" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium bg-purpleAccent/20 text-white border border-purpleAccent/30">
+                    <i data-lucide="layout-dashboard" class="w-4 h-4 text-purpleAccent"></i> Dashboard
+                </button>
+                <button onclick="switchTab('discoveries')" data-tab="discoveries" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-gray-800/50">
+                    <i data-lucide="flame" class="w-4 h-4 text-orange-400"></i> Descobertas (#1, #2, #3)
+                </button>
+                <button onclick="switchTab('editor')" data-tab="editor" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-gray-800/50">
+                    <i data-lucide="scissors" class="w-4 h-4"></i> Editor de Clips
+                </button>
+                <button onclick="switchTab('settings')" data-tab="settings" class="nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-gray-800/50">
+                    <i data-lucide="settings" class="w-4 h-4"></i> Configurações
+                </button>
+            </nav>
+        </div>
+    </aside>
+
+    <!-- CONTEÚDO PRINCIPAL -->
+    <main class="flex-1 overflow-y-auto p-8" id="main-content">
+        <!-- O conteúdo muda dinamicamente aqui -->
+    </main>
+
+    <script>
+        lucide.createIcons();
+
+        const views = {
+            dashboard: `
+                <div class="space-y-6 max-w-6xl mx-auto">
+                    <h2 class="text-2xl font-bold text-white">Dashboard do Streamer</h2>
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="bg-cardBg border border-gray-800 p-5 rounded-2xl">Vídeos Enviados: <strong class="text-purpleAccent">12</strong></div>
+                        <div class="bg-cardBg border border-gray-800 p-5 rounded-2xl">Clips Gerados: <strong class="text-purpleAccent">38</strong></div>
+                        <div class="bg-cardBg border border-gray-800 p-5 rounded-2xl">Potencial Médio: <strong class="text-purpleAccent">91.4%</strong></div>
+                    </div>
+                </div>
+            `,
+            discoveries: `
+                <div class="space-y-6 max-w-6xl mx-auto">
+                    <h2 class="text-2xl font-bold text-white">Descobertas (#1, #2, #3)</h2>
+                    <p class="text-gray-400">Momentos com maior potencial de retenção detectados na sua live.</p>
+                </div>
+            `,
+            editor: `
+                <div class="space-y-6 max-w-6xl mx-auto">
+                    <h2 class="text-2xl font-bold text-white">Editor de Clips</h2>
+                    <p class="text-gray-400">Timeline e ajustes de formato 9:16, 1:1 e 16:9.</p>
+                </div>
+            `,
+            settings: `
+                <div class="space-y-6 max-w-6xl mx-auto">
+                    <h2 class="text-2xl font-bold text-white">Configurações</h2>
+                    <p class="text-gray-400">Gerencie sua conta e preferências.</p>
+                </div>
+            `
+        };
+
+        function switchTab(tabName) {
+            document.getElementById('main-content').innerHTML = views[tabName];
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                if (btn.getAttribute('data-tab') === tabName) {
+                    btn.className = "nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium bg-purpleAccent/20 text-white border border-purpleAccent/30";
+                } else {
+                    btn.className = "nav-btn w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium text-gray-400 hover:text-white hover:bg-gray-800/50";
+                }
+            });
+            lucide.createIcons();
+        }
+
+        switchTab('dashboard');
+    </script>
+</body>
+</html>

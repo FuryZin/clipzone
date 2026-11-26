@@ -1,14 +1,27 @@
 const express = require('express');
+const session = require('express-session');
 const path = require('path');
 const app = express();
 
-// Serve arquivos estáticos da pasta atual (onde está o server.js e o index.html)
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(session({ secret: 'clipzone-secret', resave: false, saveUninitialized: true }));
+
 app.use(express.static(__dirname));
 
-// Rota para a raiz
-app.get('/', (req, res) => {
+// Rota de Login
+app.post('/login', (req, res) => {
+    const { username, password } = req.body;
+    if (username === "admin" && password === "123") {
+        req.session.user = username;
+        return res.redirect('/dashboard');
+    }
+    res.send("Usuário ou senha incorretos. <a href='/'>Voltar</a>");
+});
+
+app.get('/dashboard', (req, res) => {
+    if (!req.session.user) return res.redirect('/');
     res.sendFile(path.join(__dirname, 'index.html'));
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => console.log(`Servidor rodando na porta ${PORT}`));
+app.listen(5000, () => console.log('Servidor rodando!'));
